@@ -1,0 +1,22 @@
+/* pages/person/person.wxss */
+.content-top{
+  height: 60vh;
+  background-color: #d9d6c3;
+  color: white;
+  margin-bottom: 20px;
+  text-align: center;
+}
+text{
+  display: block;
+  margin: 20px;
+}
+.number{
+  font-size: 20px;
+  color: #faa755;
+}
+.userinfo-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  margin: 10rpx;
+  border-radius: 50%;
+}

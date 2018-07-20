@@ -1,0 +1,9 @@
+<!--pages/person/person.wxml-->
+<view class='content-top'>
+  <image class='userinfo-avatar' src='{{img}}'></image>
+      <text>累计奖励金额</text>
+      <text class='number'>{{sumadd}}</text>
+      <text>累计打卡天数</text>
+      <text class='number'>{{dayadd}}</text>
+</view>
+<calendar  days-color ="{{ daystyle}}"/>

@@ -1,0 +1,5 @@
+/* pages/msg/msg.wxss */
+image{
+  height: 100vh;
+  
+}

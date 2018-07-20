@@ -1,0 +1,2 @@
+<!--pages/img/img.wxml-->
+<image class='img' src='{{imgsrc}}'></image>
