@@ -13,6 +13,7 @@ text{
 }
 .baner{
   height: 500rpx;
+  padding-top: 12px;
   background-image: url("http://pic.90sjimg.com/back_pic/qk/back_origin_pic/00/02/28/ded5cf158629ff7686dcef434ce5b1d7.jpg");
   color: white;
   text-align: center;
@@ -56,4 +57,69 @@ button{
 }
 .color{
   color:#905a3d;
+}
+.wx-popup {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .5);
+}
+
+.popup-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 80%;
+  max-width: 600rpx;
+  border: 2rpx solid #ccc;
+  border-radius: 10rpx;
+  box-sizing: bordre-box;
+  transform: translate(-50%, -50%); 
+  overflow: hidden;
+  background: #fff;
+}
+
+.wx-popup-title {
+  width: 100%;
+  padding: 20rpx;
+  text-align: center;
+  font-size: 40rpx;
+  border-bottom: 2rpx solid red;
+}
+.wx-popup {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .5);
+}
+.wx-popup-btn {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 40rpx;
+}
+
+.wx-popup-btn text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  height: 88rpx;
+  border: 2rpx solid #ccc;
+  border-radius: 88rpx;
+}
+.label{
+  display: inline-block;
+  margin: 3px;
+  padding: 5px;
+}
+.radio{
+  padding: 5px;
+}
+.switch{
+
 }
