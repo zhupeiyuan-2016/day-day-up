@@ -1,13 +1,12 @@
 //index.js
 //获取应用实例
 const app = getApp()
-
 Page({
   data: {
     disabled:false,
     popup: {
       flag: true,
-      title: '你好',
+      title: '签到',
       money: ['10', '20', '30', '50'],
       address: '茶室'
     },
