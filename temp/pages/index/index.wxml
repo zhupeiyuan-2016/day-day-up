@@ -34,10 +34,10 @@
     <text class='label'>地址:{{map.address}}</text>
     <map id="map" longitude="{{markers[0].longitude}}" latitude="{{markers[0].latitude}}" scale="17" markers="{{markers}}" show-location style="width: 100%; height: 200px;"></map>
     <text class='label'>同意规则:</text>
-    <switch class='switch' checked bindchange="switch1Change" />
+    <switch class='switch' checked bindchange="switchChange" />
     <view class="wx-popup-btn">
-      <text class="btn-no" bindtap='_error'>取消</text>
-      <text class="btn-ok" bindtap='_success'>确定</text>
+      <button class="btn-no" bindtap='_error' >取消</button>
+      <button class="btn-ok" bindtap='_success' disabled="{{disabled}}">确定</button>
     </view>
   </view>
 </view>

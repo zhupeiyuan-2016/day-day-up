@@ -4,6 +4,7 @@ const app = getApp()
 
 Page({
   data: {
+    disabled:false,
     popup: {
       flag: true,
       title: '你好',
@@ -91,6 +92,11 @@ Page({
         }
 
       }
+    })
+  },
+  switchChange:function(){
+    this.setData({
+      disabled: !this.data.disabled
     })
   },
   regionchange(e) {
