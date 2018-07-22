@@ -32,6 +32,9 @@
                 <span slot="close">Off</span>
             </i-switch>
         </FormItem>
+        <FormItem label= "签到时间">
+            <TimePicker type="timerange" placement="bottom-end" placeholder="Select time" style="width: 168px"></TimePicker>
+        </FormItem>
         <FormItem label="海报">
              <Upload
         multiple
@@ -61,17 +64,20 @@
         </FormItem>
     </Form>
     </div>
- 
+    <div
+      is = Fooder
+    >
+    </div>
 </div> 
 </template>
 <script>
 import Header from '@/components/common/header.vue'
-import Content from '@/components/common/content'
+import Fooder from '@/components/common/fooder'
 export default {
   name:'index',
   components: {
     Header,
-    Content
+    Fooder
   },
   data () {
             return {
