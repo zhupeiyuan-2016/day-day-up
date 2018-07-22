@@ -63,11 +63,12 @@
                     <span v-on:click="rememberStatus">记住密码</span>
                 </Radio>
             </div>
-            <Button type="success" long style="background:#03A9F4">登录</Button>
+            <Button type="success" long style="background:#03A9F4" v-on:click ='post'>登录</Button>
         </div>
     </div>
 </template>
 <script>
+
 export default {
     name:"sfs",
     data:function(){
@@ -80,7 +81,20 @@ export default {
     methods:{
         rememberStatus: function () {
         this.remember = this.remember?false:true;
-    }
+    },
+        post:function(){
+            console.log(this.name)
+            this.$axios.post('/admin/login',{
+                name:text,
+                password:this.password
+            })
+            .then(function (response) {
+                    console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        }
     }
 }
 </script>

@@ -1,12 +1,10 @@
 const Base = require('../base.js');
 
-module.exports = class extends think.Controller {
-  // async __before() {
-  //   const userInfo = 'ok';
-  //   if (think.isEmpty(userInfo)) {
-  //     return false;
-  //   }
-  // }
+module.exports = class extends Base {
+  __before() {
+
+  }
+
   async indexAction() {
     const name = this.ctx.post('name');
     const password = think.md5(this.ctx.post('password'));

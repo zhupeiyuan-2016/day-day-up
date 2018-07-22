@@ -5,6 +5,10 @@ import App from './App'
 import router from './router'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import axios  from 'axios'
+axios.defaults.baseURL=" http://127.0.0.1:8360"
+Vue.prototype.$axios = axios
+
 Vue.use(iView);
 Vue.config.productionTip = false
 
