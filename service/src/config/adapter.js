@@ -36,11 +36,11 @@ exports.model = {
   },
   mysql: {
     handle: mysql,
-    database: '',
-    prefix: 'think_',
+    database: 'day',
+    prefix: '',
     encoding: 'utf8',
-    host: '127.0.0.1',
-    port: '',
+    host: 'localhost',
+    port: '3306',
     user: 'root',
     password: 'root',
     dateStrings: true
