@@ -2,11 +2,15 @@ const Base = require('../base.js');
 const fs = require('fs');
 const path = require('path');
 const rename = think.promisify(fs.rename, fs);
-module.exports = class extends think.Controller {
+module.exports = class extends Base {
   async __before() {
-    const data = this.ctx.post('session');
-    const session = await this.session('name');
-    if (data != session) {
+    const data = this.ctx.post('');
+    const model = this.model('admin/base');
+    console.log('----------------------------------');
+    console.log(data);
+    console.log(data.token);
+    console.log('-----------------------------------');
+    if (think.isEmpty(await model.gettoken(data.token))) {
       return this.fail(1, '账号未登录');
     }
   }

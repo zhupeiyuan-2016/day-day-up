@@ -50,13 +50,13 @@
                 <span class="icon">
                     <Icon type="android-person"  color=" #03a9f4" ></Icon>
                 </span>
-                <Input v-model="name" placeholder="Enter something..." clearable style="width: 200px"></Input>
+                <Input v-model="name" placeholder="Enter name..." clearable style="width: 200px"></Input>
             </div>
             <div class="input-group">
                 <span class="icon">
                     <Icon type="locked" color=" #03a9f4" ></Icon>
                 </span>
-                <Input v-model="password" placeholder="Enter something..." clearable style="width: 200px"></Input>
+                <Input v-model="password" type="password" placeholder="Enter password..."  clearable style="width: 200px"></Input>
             </div>
             <div class="input-group">
                 <Radio v-model="remember" >
@@ -65,6 +65,12 @@
             </div>
             <Button type="success" long style="background:#03A9F4" v-on:click ='post'>登录</Button>
         </div>
+        <Modal
+        v-model="modal1"
+        title="提示！"
+            >
+        <p>{{msg}}</p>
+    </Modal>
     </div>
 </template>
 <script>
@@ -75,7 +81,9 @@ export default {
         return {
             name:'',
             password:'',
-            remember:''
+            remember:'',
+            modal1:false,
+            msg:'错误'
         }
     },
     methods:{
@@ -83,13 +91,24 @@ export default {
         this.remember = this.remember?false:true;
     },
         post:function(){
-            console.log(this.name)
+            var _this = this;
             this.$axios.post('/admin/login',{
-                name:text,
-                password:this.password
+                name:_this.name,
+                password:_this.password
             })
             .then(function (response) {
-                    console.log(response);
+                if(response.data.errmsg == '用户名不存在'){
+                   _this.modal1 = true;
+                    _this.msg = "用户名不存在"
+                }else if(response.data.errmsg == '密码错误'){
+                     _this.modal1 = true;
+                    _this.msg = "密码错误"
+                }else{
+                    localStorage.setItem('name',_this.name)
+                    console.log(localStorage.getItem('name'))
+                    localStorage.setItem('token',response.data.data.session);
+                    _this.$router.push('/')
+                }
             })
             .catch(function (error) {
                 console.log(error);

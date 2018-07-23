@@ -10,6 +10,7 @@
 <div>
     <div
       is=Header
+    v-bind:name = "post.name"
     >
     </div>
     <div class="form">
@@ -36,30 +37,29 @@
             <TimePicker type="timerange" placement="bottom-end" placeholder="Select time" style="width: 168px"></TimePicker>
         </FormItem>
         <FormItem label="海报">
-             <Upload
-        multiple
-        type="drag"
-        action="//jsonplaceholder.typicode.com/posts/">
-        <div style="padding: 20px 0">
-            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>Click or drag files here to upload</p>
-        </div>
-    </Upload>
+            <Upload
+            :before-upload="Uploadbanner"
+            action="http://localhost:8360/admin/setup">
+            <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+        </Upload>
+        <div v-if="formItem.banner !== null">Upload file: {{ formItem.banner.name }} </div>
+    
+          
         </FormItem>
          <FormItem label="规则">
             <Upload
-        multiple
-        type="drag"
-        action="//jsonplaceholder.typicode.com/posts/">
-        <div style="padding: 20px 0">
-            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-            <p>Click or drag files here to upload</p>
-        </div>
-        </Upload>
-          <Input v-model=" formItem.text" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
-         </FormItem>
+                 <Upload
+                    :before-upload="Uploadrulesimg"
+                    action="http://localhost:8360/admin/setup">
+                <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
+            </Upload>
+        <div v-if="formItem.rulesimg !== null">Upload file: {{ formItem.rulesimg.name }} </div>
+    
+            </Upload>
+            <Input v-model=" formItem.rulestext" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+        </FormItem>
         <FormItem>
-            <Button type="primary">Submit</Button>
+            <Button type="primary" v-on:click ='postdata'>Submit</Button>
             <Button type="ghost" style="margin-left: 8px">Cancel</Button>
         </FormItem>
     </Form>
@@ -81,19 +81,88 @@ export default {
   },
   data () {
             return {
+                post:{
+                    name:'ok'
+                },
                 formItem: {
-                    input: '',
-                    select: '',
-                    radio: 'male',
-                    checkbox: [],
-                    switch: true,
-                    date: '',
-                    time: '',
-                    slider: [20, 50],
-                    text: ''
+                    session:'',
+                    latitude:'',
+                    longitude:'',
+                    address:'',
+                    map:'',
+                    date:'',
+                    rulestext:'',
+                    rulesimg:'',
+                    banner:''
                 }
             }
+        },
+    created:function () {
+        const token = localStorage.getItem('token');
+        const name  = localStorage.getItem('name');
+        console.log(this.formItem.token)
+        this.post.name  = name;
+        if(!token){
+            this.$router.push('/login')
+        }else{
+            this.formItem.token = token;
+             console.log(this.formItem.token)
         }
+    },
+    methods:{
+        Uploadbanner(file){
+            this.formItem.banner = file;
+            console.log(file)
+            return false;
+        },
+        Uploadrulesimg(file){
+            this.formItem.rulesimg = file;
+            return false;
+        },
+        postdata:function(){
+            let _this = this;
+            console.log(this.formItem.banner)
+            console.log(_this.formItem.token)
+            // this.$axios({
+            //     headers:{
+            //         'Content-Type': 'multipart/form-data'
+            //     },
+            //     methods:'post',
+            //     url:'/admin/setup',
+            //     data:{
+            //     token :_this.formItem.token,
+            //     latitude:_this.formItem.latitude,
+            //     longitude:_this.formItem.longitude,
+            //     address:_this.formItem.address
+            //     // map:_this.formItem.map,
+            //     // date:_this.formItem.date,
+            //     // rulestext:_this.formItem.rulestext,
+            //     // rulesimg:_this.formItem.rulesimg,
+            //     // banner:_this.formItem.banner
+            //     },
+            //     success:function(e){
+            //         console.log(e.data)
+            //     }
+            // })
+             this.$axios.post('/admin/setup',{
+                token :_this.formItem.token,
+                latitude:_this.formItem.latitude,
+                longitude:_this.formItem.longitude,
+                address:_this.formItem.address,
+                map:_this.formItem.map,
+                date:_this.formItem.date,
+                rulestext:_this.formItem.rulestext,
+                rulesimg:_this.formItem.rulesimg,
+                banner:_this.formItem.banner
+            })
+            .then(function (response) {
+              console.log(response.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        }
+    }
 }
 </script>
 

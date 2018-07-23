@@ -1,6 +1,6 @@
 const path = require('path');
 const isDev = think.env === 'development';
-
+const cors = require('@koa/cors');
 module.exports = [
   {
     handle: 'meta',
@@ -16,6 +16,16 @@ module.exports = [
       root: path.join(think.ROOT_PATH, 'www'),
       publicPath: /^\/(static|favicon\.ico)/
     }
+  },
+  {
+    handle: 'meta',
+    options: {
+      logRequest: isDev,
+      sendResponseTime: isDev
+    }
+  },
+  {
+    handle: cors
   },
   {
     handle: 'trace',

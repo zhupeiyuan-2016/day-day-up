@@ -2,7 +2,7 @@ const Base = require('../base.js');
 
 module.exports = class extends Base {
   __before() {
-
+    // super.__before();
   }
 
   async indexAction() {
@@ -11,8 +11,9 @@ module.exports = class extends Base {
     const usermodel = this.model('admin/login');
     const data = await usermodel.user(name, password);
     if (data == 0) {
-      await this.session('name', think.md5(password + new Date()));
-      return this.success({session: await this.session('name')});
+      const token = this.model('admin/base');
+      await token.token(name, think.md5(password + new Date()));
+      return this.success({session: think.md5(password + new Date())});
     } else if (data == 1) {
       return this.fail(1, '密码错误');
     } else {

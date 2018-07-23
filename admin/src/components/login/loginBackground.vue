@@ -54,7 +54,7 @@ export default {
   },
   data: function() {
     return {
-      name:"九米CMS后台管理系统",
+      name:"打卡后台系统",
       msg: "背景图"
     };
   }

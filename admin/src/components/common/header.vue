@@ -52,11 +52,11 @@
 <script>
 export default {
   name:'MyHeader',
+  props:['name'],
   data:function(){
     return{
-      title:'九米后台管理系统',
-      msg:'headerSFDS',
-      name:'jiumi'
+      title:'打卡后台系统',
+      msg:'headerSFDS'
     }
   }
 }
