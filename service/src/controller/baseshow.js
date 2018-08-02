@@ -16,7 +16,6 @@ module.exports = class extends Base {
       'name': first.name,
       'img': await model.userimg(first.name),
       'date': first.date
-
     });
   }
 };

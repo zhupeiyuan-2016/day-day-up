@@ -1,15 +1,15 @@
 <view class='baner'>
   <text>今日挑战人数</text>
-  <text class='daynumber'>{{daynumber}}</text>
+  <text class='daynumber'>{{baseshow.daynumber}}</text>
   <text>挑战金额</text>
-  <text class='prizenumber'>{{prizenumber}}</text>
+  <text class='prizenumber'>{{baseshow.prizenumber}}</text>
 </view>
 <button bindtap="post">同意规则并参加挑战</button>
 <view class='first'>
   <text>今日打卡最早</text>
-  <image class='userinfo-avatar' src='{{first.img}}'></image>
-  <view>{{first.name}}</view>
-  <text class='userinfo-date'>{{first.date}}</text>
+  <image class='userinfo-avatar' src='{{baseshow.img}}'></image>
+  <view>{{baseshow.name}}</view>
+  <text class='userinfo-date'>{{baseshow.date}}</text>
 </view>
 <view class='ul-item' wx:for="{{personlist}}">
   <image class='userinfo-avatar' src='{{item.img}}'></image>

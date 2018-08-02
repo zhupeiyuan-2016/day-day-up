@@ -13,7 +13,10 @@ module.exports = class extends think.Model {
   }
   async userimg(name) {
     const model = this.model('users');
+    console.log(name);
     const user = await model.where({name: name}).find();
+    console.log('0000000000000000');
+    console.log(user);
     return user.img;
   }
   async userday(name) {
@@ -39,7 +42,6 @@ module.exports = class extends think.Model {
   async map() {
     const model = this.model('setup');
     const setup = await model.limit(1).select();
-    console.log(setup);
     const data = {
       radius: setup[0].radius,
       latitude: setup[0].latitude,

@@ -1,5 +1,6 @@
 //index.js
 //获取应用实例
+var localhost = getApp().globalData.localhost
 const app = getApp()
 Page({
   data: {
@@ -23,9 +24,9 @@ Page({
       width: 50,
       height: 50
     }],
-    daynumber: '12423',
-    prizenumber: '34545',
-    first: {
+    baseshow:{
+      daynumber: '12423',
+      prizenumber: '34545',
       name: 'jiumi',
       img: 'person/1.jpg',
       date: '2018年07月14日10:44:08'
@@ -35,29 +36,12 @@ Page({
         img: 'person/1.jpg',
         date: '07:20',
         add: '111'
-      },
-      {
-        name: 'jiumi01',
-        img: 'person/1.jpg',
-        date: '07:20',
-        add: '111'
-      },
-      {
-        name: 'jiumi01',
-        img: 'person/1.jpg',
-        date: '07:20',
-        add: '111'
-      },
-      {
-        name: 'jiumi01',
-        img: 'person/1.jpg',
-        date: '07:20',
-        add: '111'
       }
     ],
   },
   //事件处理函数
   post: function() {
+    console.log(this.data.personlist)
     let that = this;
     var latitude;
     var longitude;
@@ -71,9 +55,7 @@ Page({
         latitude = res.latitude;
         longitude = res.longitude;
         let map = that.data.map;
-        console.log(latitude);
-        console.log(map.latitude + map.radius)
-        console.log(map.latitude - map.radius)
+        console.log(map);
         if ((latitude < map.latitude + map.radius && latitude > map.latitude - map.radius) && (longitude < map.longitude + map.radius && longitude > map.longitude - map.radius)) {
           that.setData({
             [flag]: !that.data.popup.flag,
@@ -98,60 +80,66 @@ Page({
       disabled: !this.data.disabled
     })
   },
-  regionchange(e) {
-    console.log(e.type)
-  },
-  markertap(e) {
-    console.log(e.markerId)
-  },
-  controltap(e) {
-    console.log(e.controlId)
-  },
   _error: function() {
     let str = 'popup.flag'
     this.setData({
       [str]: !this.data.popup.flag
     })
   },
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  },
   onLoad: function() {
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse) {
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
+  let _this = this
+    // wx.request({
+    //   url: localhost+`/map`,
+    //   success:function(e){
+    //     let mapradius = 'map.radius';
+    //     let maplatitude = 'map.latitude';
+    //     let maplongtiude = 'map.longitude';
+    //     let data = e.data.data
+    //     console.log(data)
+    //     _this.setData({
+    //       [mapradius] : data.radius,
+    //       [maplatitude] : data.latitude,
+    //       [maplongtiude]: data.longitude,
+    //     })
+    //   }
+    // })
+   wx.request({
+     url: localhost+'/baseshow',
+     success:function(e){
+       let data = e.data.data;
+       let daynumber = 'baseshow.daynumber';
+       let prizenumber = 'baseshow.prizenumber';
+       let name = 'baseshow.name';
+       let img = 'baseshow.img';
+       let date = 'baseshow.date';
+       console.log(data)
+       _this.setData({
+         [daynumber]: data.daynumber,
+         [prizenumber]: data.prizenumber,
+         [name]:data.name,
+         [img]:data.img,
+         [date]:data.date,
+       })
+     }
+   })
+   wx.request({
+     url: localhost+'/showlist',
+     success:function(e){
+      let data = e.data.data;
+      let temp = [];
+      for(let i = 0;i< data.length;i++){
+        temp.push({
+          'name':data[i].name,
+          'img':data[i].img,
+          'date':data[i].date,
+          'add':data[i].add
         })
-      }
-    } else {
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
-        }
+      };
+      console.log(temp)
+      _this.setData({
+        personlist:temp
       })
-    }
-  },
-  getUserInfo: function(e) {
-    console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
+     }
+   })
   }
 })

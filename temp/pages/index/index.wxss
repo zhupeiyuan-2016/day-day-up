@@ -46,13 +46,14 @@ button{
   clear: both;
 }
 .ul-item{
+  width: 345px;
   padding: 10px;
   border-bottom: 5rpx solid #faf6f6;
 }
 .ul-item  view{
   display: inline-block;
   padding-top: 0px;
-  padding-left: 30px;
+  /* padding-left: 30px; */
   font-size: 15px;
 }
 .color{
