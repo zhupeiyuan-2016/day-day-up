@@ -36,4 +36,15 @@ module.exports = class extends think.Model {
     };
     return data;
   }
+  async map() {
+    const model = this.model('setup');
+    const setup = await model.limit(1).select();
+    console.log(setup);
+    const data = {
+      radius: setup[0].radius,
+      latitude: setup[0].latitude,
+      longitude: setup[0].longitude
+    };
+    return data;
+  }
 };
