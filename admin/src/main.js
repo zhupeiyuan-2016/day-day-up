@@ -8,6 +8,7 @@ import 'iview/dist/styles/iview.css';
 import axios  from 'axios'
 
 axios.defaults.baseURL=" http://127.0.0.1:8360"
+
 Vue.prototype.$axios = axios
 
 Vue.use(iView);

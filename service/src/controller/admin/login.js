@@ -11,8 +11,7 @@ module.exports = class extends Base {
     const usermodel = this.model('admin/login');
     const data = await usermodel.user(name, password);
     if (data == 0) {
-      const token = this.model('admin/base');
-      await token.token(name, think.md5(password + new Date()));
+      await usermodel.token(name, think.md5(password + new Date()));
       return this.success({session: think.md5(password + new Date())});
     } else if (data == 1) {
       return this.fail(1, '密码错误');

@@ -38,6 +38,7 @@
         </FormItem>
         <FormItem label="海报">
             <Upload
+            name="banner"
             :before-upload="Uploadbanner"
             action="http://localhost:8360/admin/setup">
             <Button type="ghost" icon="ios-cloud-upload-outline">Select the file to upload</Button>
@@ -85,7 +86,7 @@ export default {
                     name:'ok'
                 },
                 formItem: {
-                    session:'',
+                    token:'',
                     latitude:'',
                     longitude:'',
                     address:'',
@@ -100,7 +101,6 @@ export default {
     created:function () {
         const token = localStorage.getItem('token');
         const name  = localStorage.getItem('name');
-        console.log(this.formItem.token)
         this.post.name  = name;
         if(!token){
             this.$router.push('/login')
@@ -120,47 +120,21 @@ export default {
             return false;
         },
         postdata:function(){
-            let _this = this;
-            console.log(this.formItem.banner)
-            console.log(_this.formItem.token)
-            // this.$axios({
-            //     headers:{
-            //         'Content-Type': 'multipart/form-data'
-            //     },
-            //     methods:'post',
-            //     url:'/admin/setup',
-            //     data:{
-            //     token :_this.formItem.token,
-            //     latitude:_this.formItem.latitude,
-            //     longitude:_this.formItem.longitude,
-            //     address:_this.formItem.address
-            //     // map:_this.formItem.map,
-            //     // date:_this.formItem.date,
-            //     // rulestext:_this.formItem.rulestext,
-            //     // rulesimg:_this.formItem.rulesimg,
-            //     // banner:_this.formItem.banner
-            //     },
-            //     success:function(e){
-            //         console.log(e.data)
-            //     }
-            // })
-             this.$axios.post('/admin/setup',{
-                token :_this.formItem.token,
-                latitude:_this.formItem.latitude,
-                longitude:_this.formItem.longitude,
-                address:_this.formItem.address,
-                map:_this.formItem.map,
-                date:_this.formItem.date,
-                rulestext:_this.formItem.rulestext,
-                rulesimg:_this.formItem.rulesimg,
-                banner:_this.formItem.banner
+            const fordata = new FormData();
+            fordata.append('token',this.formItem.token);
+            fordata.append('latitude',this.formItem.latitude);
+            fordata.append('longitude',this.formItem.longitude);
+            fordata.append('address',this.formItem.address);
+            fordata.append('map',this.formItem.map);
+            fordata.append('date',this.formItem.date);
+            fordata.append('rulestext',this.formItem.rulestext);
+            fordata.append('rulesimg',this.formItem.rulesimg);
+            fordata.append('banner',this.formItem.banner);
+            console.log(fordata)
+            this.$axios.post('/admin/setup',fordata).then((res)=>{
+                console.log(res)
             })
-            .then(function (response) {
-              console.log(response.data)
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
+
         }
     }
 }
