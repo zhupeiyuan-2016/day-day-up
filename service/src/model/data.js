@@ -21,4 +21,19 @@ module.exports = class extends think.Model {
     const user = await model.where({name: name}).find();
     return user.day;
   }
+  async banner() {
+    const model = this.model('setup');
+    const banner = await model.limit(1).select();
+    const data = banner[0].banner;
+    return data;
+  }
+  async rules() {
+    const model = this.model('setup');
+    const rules = await model.limit(1).select();
+    const data = {
+      img: rules[0].rulesimg,
+      text: rules[0].rulestext
+    };
+    return data;
+  }
 };
