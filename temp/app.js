@@ -6,7 +6,7 @@ App({
         if (res.code) {
           console.log(res.code)
           wx.request({
-            url: 'http://localhost:8360/login',
+            url: 'http://192.168.1.112:8360/login',
             method:'POST',
             data: {
               code: res.code
@@ -47,6 +47,6 @@ App({
   },
   globalData: {
     userInfo: null,
-    localhost:'http://127.0.0.1:8360'
+    localhost:'http://192.168.1.112:8360'
   }
 })
