@@ -1,2 +1,1 @@
-<!--pages/msg/msg.wxml-->
 <image class='img' src='{{imgsrc}}'></image>
