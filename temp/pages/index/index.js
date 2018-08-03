@@ -25,7 +25,7 @@ Page({
       height: 50
     }],
     baseshow:{
-      daynumber: '12423',
+      daynumber: '888',
       prizenumber: '34545',
       name: 'jiumi',
       img: 'person/1.jpg',
@@ -41,7 +41,6 @@ Page({
   },
   //事件处理函数
   post: function() {
-    console.log(this.data.personlist)
     let that = this;
     var latitude;
     var longitude;
@@ -55,7 +54,6 @@ Page({
         latitude = res.latitude;
         longitude = res.longitude;
         let map = that.data.map;
-        console.log(map);
         if ((latitude < map.latitude + map.radius && latitude > map.latitude - map.radius) && (longitude < map.longitude + map.radius && longitude > map.longitude - map.radius)) {
           that.setData({
             [flag]: !that.data.popup.flag,
@@ -88,38 +86,53 @@ Page({
   },
   onLoad: function() {
   let _this = this
-    // wx.request({
-    //   url: localhost+`/map`,
-    //   success:function(e){
-    //     let mapradius = 'map.radius';
-    //     let maplatitude = 'map.latitude';
-    //     let maplongtiude = 'map.longitude';
-    //     let data = e.data.data
-    //     console.log(data)
-    //     _this.setData({
-    //       [mapradius] : data.radius,
-    //       [maplatitude] : data.latitude,
-    //       [maplongtiude]: data.longitude,
-    //     })
-    //   }
-    // })
+    wx.request({
+      url: localhost+`/map`,
+      success:function(e){
+        let mapradius = 'map.radius';
+        let maplatitude = 'map.latitude';
+        let maplongtiude = 'map.longitude';
+        let data = e.data.data
+        console.log(e.data)
+        _this.setData({
+          [mapradius] : data.radius,
+          [maplatitude] : data.latitude,
+          [maplongtiude]: data.longitude,
+        })
+      }
+    })
    wx.request({
      url: localhost+'/baseshow',
      success:function(e){
-       let data = e.data.data;
-       let daynumber = 'baseshow.daynumber';
-       let prizenumber = 'baseshow.prizenumber';
-       let name = 'baseshow.name';
-       let img = 'baseshow.img';
-       let date = 'baseshow.date';
-       console.log(data)
-       _this.setData({
-         [daynumber]: data.daynumber,
-         [prizenumber]: data.prizenumber,
-         [name]:data.name,
-         [img]:data.img,
-         [date]:data.date,
-       })
+       if(e.data.errno != 1){
+         let data = e.data.data;
+         let daynumber = 'baseshow.daynumber';
+         let prizenumber = 'baseshow.prizenumber';
+         let name = 'baseshow.name';
+         let img = 'baseshow.img';
+         let date = 'baseshow.date';
+         _this.setData({
+           [daynumber]: data.daynumber,
+           [prizenumber]: data.prizenumber,
+           [name]: data.name,
+           [img]: data.img,
+           [date]: data.date,
+         })
+       }else{
+         let daynumber = 'baseshow.daynumber';
+         let prizenumber = 'baseshow.prizenumber';
+         let name = 'baseshow.name';
+         let img = 'baseshow.img';
+         let date = 'baseshow.date';
+         _this.setData({
+           [daynumber]: '8888',
+           [prizenumber]:'888',
+           [name]: 'jiumi',
+           [img]: 'person/1.jpg',
+           [date]: '888',
+         })
+       }
+       
      }
    })
    wx.request({
@@ -135,7 +148,6 @@ Page({
           'add':data[i].add
         })
       };
-      console.log(temp)
       _this.setData({
         personlist:temp
       })

@@ -10,6 +10,9 @@ module.exports = class extends Base {
       prizenumber += data[i].money;
     }
     const first = data[data.length - 1];
+    if (think.isEmpty(first)) {
+      return this.fail(1, '今天还没有打卡');
+    }
     return this.success({
       'daynumber': daynumber,
       'prizenumber': prizenumber,

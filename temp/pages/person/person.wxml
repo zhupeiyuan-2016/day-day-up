@@ -5,5 +5,7 @@
       <text class='number'>{{sumadd}}</text>
       <text>累计打卡天数</text>
       <text class='number'>{{dayadd}}</text>
+     
 </view>
+ <button class='getUserInfo' open-type="getUserInfo"></button> 
 <calendar  days-color ="{{ daystyle}}"/>

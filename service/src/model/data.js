@@ -3,6 +3,7 @@ module.exports = class extends think.Model {
     const model = this.model('data');
     const date = new Date().getFullYear() + `-` + new Date().getMonth() + `-` + new Date().getDay();
     const box = await model.limit(count).select();
+    console.log(box);
     const data = [];
     for (let i = 0; i < box.length; i++) {
       if (box[i].date == date) {
@@ -13,10 +14,9 @@ module.exports = class extends think.Model {
   }
   async userimg(name) {
     const model = this.model('users');
+    console.log('name-------------------');
     console.log(name);
     const user = await model.where({name: name}).find();
-    console.log('0000000000000000');
-    console.log(user);
     return user.img;
   }
   async userday(name) {

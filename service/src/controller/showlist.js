@@ -8,7 +8,7 @@ module.exports = class extends Base {
       data[i].img = await model.userimg(data[i].name);
       data[i].add = await model.userday(data[i].name);
     }
-
+    console.log(data);
     return this.success(data);
   }
 };

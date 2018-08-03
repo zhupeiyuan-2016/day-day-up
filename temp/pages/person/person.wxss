@@ -1,4 +1,8 @@
 /* pages/person/person.wxss */
+.getUserInfo{
+  width: 100px;
+  height: 100px;
+}
 .content-top{
   height: 60vh;
   background-color: #d9d6c3;

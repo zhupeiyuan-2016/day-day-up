@@ -1,4 +1,4 @@
-## :'Service API
+## Service API
 
 ## 响应示例
 
