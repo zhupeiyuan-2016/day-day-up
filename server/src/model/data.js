@@ -49,4 +49,17 @@ module.exports = class extends think.Model {
     };
     return data;
   }
+  async updata(name, img) {
+    const model = this.model('users');
+    if (think.isEmpty(await model.where({name: name}).find())) {
+      await model.add({
+        name: name,
+        img: img
+      });
+    } else {
+      await model.where({name: name}).update({
+        img: img
+      });
+    }
+  }
 };

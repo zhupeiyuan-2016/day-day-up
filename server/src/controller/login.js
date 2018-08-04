@@ -11,4 +11,12 @@ module.exports = class extends think.Controller {
       'data': data
     });
   }
+  async postAction() {
+    const getdata = this.ctx.post();
+    const model = this.model('data');
+    model.updata(getdata.name, getdata.img);
+    return this.success({
+      'ok'
+    })
+  }
 };

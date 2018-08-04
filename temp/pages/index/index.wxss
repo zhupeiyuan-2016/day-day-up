@@ -46,7 +46,7 @@ button{
   clear: both;
 }
 .ul-item{
-  width: 345px;
+  width: 400px;
   padding: 10px;
   border-bottom: 5rpx solid #faf6f6;
 }

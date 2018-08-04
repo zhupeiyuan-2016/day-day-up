@@ -36,6 +36,18 @@ Page({
               _this.setData({
                 ['img']: res.userInfo.avatarUrl
               })
+              wx.request({
+                url: localhost+'/login/post',
+                method: 'POST',
+                data: {
+                  name: res.userInfo.nickName,
+                  img: res.userInfo.avatarUrl
+                },
+                success: function (e) {
+                  console.log('请求')
+                  console.log(e.data)
+                }
+              })
             }
           })
         }
