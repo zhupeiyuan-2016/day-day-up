@@ -88,7 +88,10 @@ Page({
             },
             success: function (e) {
               let openid = e.data.data.data;
-              console.log(openid)
+              wx.setStorage({
+                key: 'openid',
+                data: openid,
+              })
               wx.getSetting({
                 success: function (res) {
                   if (res.authSetting['scope.userInfo']) {

@@ -27,35 +27,37 @@ Page({
    */
   onLoad: function (options) {
     let _this = this;
+    //微信获取微信数据
     wx.getSetting({
       success: function (res) {
         if (res.authSetting['scope.userInfo']) {
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称
           wx.getUserInfo({
             success: function (res) {
+              console.log(res)
               _this.setData({
                 ['img']: res.userInfo.avatarUrl
-              })
-              wx.request({
-                url: localhost+'/login/post',
-                method: 'POST',
-                data: {
-                  name: res.userInfo.nickName,
-                  img: res.userInfo.avatarUrl
-                },
-                success: function (e) {
-                  console.log('请求')
-                  console.log(e.data)
-                }
               })
             }
           })
         }
       }
     })
-    // wx.request({
-    //   url: localhost+'/',
-    // })
+    let openid = wx.getStorageSync('openid');
+    wx.request({
+      url: localhost + '/person',
+      method:'post',
+      data:{
+        openid : openid
+      },
+      success:function(e){
+        console.log(e.data.data.data)
+        _this.setData({
+          ['dayadd']: e.data.data.data.day,
+          ['sumadd']: e.data.data.data.money,
+        })
+      }
+    })
   },
 
   /**

@@ -12,14 +12,6 @@ module.exports = class extends think.Model {
     }
     return data;
   }
-  async login(openid) {
-    const model = this.model('users');
-    if (think.isEmpty(await model.where({openid: openid}).find())) {
-      await model.add({
-        openid: openid
-      });
-    }
-  }
   async userimg(name) {
     const model = this.model('users');
     console.log('name-------------------');
@@ -71,5 +63,11 @@ module.exports = class extends think.Model {
         img: img
       });
     }
+  }
+  async person(openid) {
+    const model = this.model('users');
+    const data = await model.where({openid: openid}).find();
+    console.log(data);
+    return data;
   }
 };
