@@ -4,7 +4,7 @@
   <text>挑战金额</text>
   <text class='prizenumber'>{{baseshow.prizenumber}}</text>
 </view>
-<button bindtap="post">同意规则并参加挑战</button>
+<button bindtap="post" open-type="getUserInfo">同意规则并参加挑战</button>
 <view class='first'>
   <text>今日打卡最早</text>
   <image class='userinfo-avatar' src='{{baseshow.img}}'></image>

@@ -7,5 +7,4 @@
       <text class='number'>{{dayadd}}</text>
      
 </view>
- <button class='getUserInfo' open-type="getUserInfo"></button> 
 <calendar  days-color ="{{ daystyle}}"/>

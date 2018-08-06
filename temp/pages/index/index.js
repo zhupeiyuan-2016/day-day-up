@@ -48,6 +48,7 @@ Page({
     let datalatitude = 'markers[0].latitude';
     let datalongitude = 'markers[0].longitude';
     let dataaddress = 'map.address';
+    //获取地图信息
     wx.getLocation({
       type: 'gcj02',
       success: function(res) {
@@ -72,6 +73,54 @@ Page({
 
       }
     })
+    //获取openid
+    wx.login({
+      success: res => {
+        if (res.code) {
+          wx.request({
+            url: localhost+`/login`,
+            method: 'POST',
+            data: {
+              code: res.code
+            },
+            header: {
+              'content-type': 'application/x-www-form-urlencoded'
+            },
+            success: function (e) {
+              let openid = e.data.data.data;
+              console.log(openid)
+              wx.getSetting({
+                success: function (res) {
+                  if (res.authSetting['scope.userInfo']) {
+                    // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+                    wx.getUserInfo({
+                      success: function (res) {
+                        wx.request({
+                          url: localhost + '/login/post',
+                          method: 'POST',
+                          data: {
+                            openid:openid,
+                            name: res.userInfo.nickName,
+                            img: res.userInfo.avatarUrl
+                          },
+                          success: function (e) {
+                            console.log('请求')
+                            console.log(e.data)
+                          }
+                        })
+                      }
+                    })
+                  }
+                }
+              })
+            }
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
+    
   },
   switchChange:function(){
     this.setData({
@@ -93,7 +142,6 @@ Page({
         let maplatitude = 'map.latitude';
         let maplongtiude = 'map.longitude';
         let data = e.data.data
-        console.log(e.data)
         _this.setData({
           [mapradius] : data.radius,
           [maplatitude] : data.latitude,
