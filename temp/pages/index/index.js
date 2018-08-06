@@ -74,55 +74,7 @@ Page({
       }
     })
     //获取openid
-    wx.login({
-      success: res => {
-        if (res.code) {
-          wx.request({
-            url: localhost+`/login`,
-            method: 'POST',
-            data: {
-              code: res.code
-            },
-            header: {
-              'content-type': 'application/x-www-form-urlencoded'
-            },
-            success: function (e) {
-              let openid = e.data.data.data;
-              wx.setStorage({
-                key: 'openid',
-                data: openid,
-              })
-              wx.getSetting({
-                success: function (res) {
-                  if (res.authSetting['scope.userInfo']) {
-                    // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-                    wx.getUserInfo({
-                      success: function (res) {
-                        wx.request({
-                          url: localhost + '/login/post',
-                          method: 'POST',
-                          data: {
-                            openid:openid,
-                            name: res.userInfo.nickName,
-                            img: res.userInfo.avatarUrl
-                          },
-                          success: function (e) {
-                            console.log('请求')
-                            console.log(e.data)
-                          }
-                        })
-                      }
-                    })
-                  }
-                }
-              })
-            }
-          })
-        } else {
-          console.log('登录失败！' + res.errMsg)
-        }
-      }
-    })
+   
     
   },
   switchChange:function(){
@@ -138,6 +90,31 @@ Page({
   },
   onLoad: function() {
   let _this = this
+    wx.login({
+      success: res => {
+        if (res.code) {
+          wx.request({
+            url: localhost + `/login`,
+            method: 'POST',
+            data: {
+              code: res.code
+            },
+            header: {
+              'content-type': 'application/x-www-form-urlencoded'
+            },
+            success: function (e) {
+              let openid = e.data.data.data;
+              wx.setStorage({
+                key: 'openid',
+                data: openid,
+              })
+            }
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
     wx.request({
       url: localhost+`/map`,
       success:function(e){
@@ -204,5 +181,57 @@ Page({
       })
      }
    })
+  },
+  onShow:function(e){
+    console.log('首页')
+    wx.login({
+      success: res => {
+        if (res.code) {
+          wx.request({
+            url: localhost + `/login`,
+            method: 'POST',
+            data: {
+              code: res.code
+            },
+            header: {
+              'content-type': 'application/x-www-form-urlencoded'
+            },
+            success: function (e) {
+              let openid = e.data.data.data;
+              wx.setStorage({
+                key: 'openid',
+                data: openid,
+              })
+              wx.getSetting({
+                success: function (res) {
+                  if (res.authSetting['scope.userInfo']) {
+                    // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+                    wx.getUserInfo({
+                      success: function (res) {
+                        wx.request({
+                          url: localhost + '/login/post',
+                          method: 'POST',
+                          data: {
+                            openid: openid,
+                            name: res.userInfo.nickName,
+                            img: res.userInfo.avatarUrl
+                          },
+                          success: function (e) {
+                            console.log('请求')
+                            console.log(e.data)
+                          }
+                        })
+                      }
+                    })
+                  }
+                }
+              })
+            }
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
   }
 })

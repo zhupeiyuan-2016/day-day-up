@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    img:'https://tse3.mm.bing.net/th?id=OIP.M06jqR3YtlHKbcNKM8nYhwAAAA&pid=Api',
+    img:'',
     dayadd: '10',
     sumadd: '123',
     daystyle: [{
@@ -25,24 +25,10 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onShow: function (options) {
+    console.log('第一次')
     let _this = this;
     //微信获取微信数据
-    wx.getSetting({
-      success: function (res) {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-          wx.getUserInfo({
-            success: function (res) {
-              console.log(res)
-              _this.setData({
-                ['img']: res.userInfo.avatarUrl
-              })
-            }
-          })
-        }
-      }
-    })
     let openid = wx.getStorageSync('openid');
     wx.request({
       url: localhost + '/person',
@@ -51,10 +37,11 @@ Page({
         openid : openid
       },
       success:function(e){
-        console.log(e.data.data.data)
+        // console.log(e.data.data.data)
         _this.setData({
           ['dayadd']: e.data.data.data.day,
           ['sumadd']: e.data.data.data.money,
+          ['img']:e.data.data.data.img
         })
       }
     })
@@ -70,9 +57,6 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
-
-  },
 
   /**
    * 生命周期函数--监听页面隐藏
