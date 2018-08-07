@@ -67,7 +67,22 @@ module.exports = class extends think.Model {
   async person(openid) {
     const model = this.model('users');
     const data = await model.where({openid: openid}).find();
-    console.log(data);
     return data;
+  }
+  async clock(openid, money, data) {
+    const model = this.model('data');
+    const users = this.model('users');
+    if (await users.where({openid: openid}).find().status) {
+      await model.add({
+        openid: openid,
+        data: data,
+        money: money
+      });
+      await users.where({openid: openid}).update({
+        status: 1
+      });
+    } else {
+      return false;
+    }
   }
 };

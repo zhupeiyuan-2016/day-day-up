@@ -7,8 +7,8 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import axios  from 'axios'
 
-axios.defaults.baseURL=" http://127.0.0.1:8360"
-
+// axios.defaults.baseURL=" http://127.0.0.1:8360"
+axios.defaults.baseURL="https:day.jiumilove.cn"
 Vue.prototype.$axios = axios
 
 Vue.use(iView);
