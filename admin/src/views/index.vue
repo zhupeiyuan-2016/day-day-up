@@ -3,6 +3,7 @@
     width: 400px;
     margin:  0 auto;
     padding-top: 40px;
+    
   }
 </style>
 

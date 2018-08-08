@@ -69,20 +69,37 @@ module.exports = class extends think.Model {
     const data = await model.where({openid: openid}).find();
     return data;
   }
-  async clock(openid, money, data) {
-    const model = this.model('data');
+  async clock(openid, money, date) {
     const users = this.model('users');
-    if (await users.where({openid: openid}).find().status) {
-      await model.add({
-        openid: openid,
-        data: data,
-        money: money
-      });
+    const user = await users.where({openid: openid}).find();
+    if (think.isEmpty(user.status)) {
       await users.where({openid: openid}).update({
-        status: 1
+        nowmoney: money,
+        status: date
       });
     } else {
-      return false;
+      return 0;
     }
+  }
+  async nowclock(openid) {
+    const users = this.model('users');
+    const user = await users.where({openid: openid}).find();
+    const userday = new Date(user.status);
+    const nowday = Date.parse(new Date());
+    console.log(user.status)
+    console.log(nowday)
+    // if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() == nowday.getDate() + 1) {
+    //   const daylist = this.model('data');
+    //   await daylist.add({
+    //     openid: openid,
+    //     name: user.name,
+    //     img: user.img,
+    //     date: user.status,
+    //     money: user.nowmoney
+    //   });
+    //   return 1;
+    // } else {
+    //   return 0;
+    // }
   }
 };
