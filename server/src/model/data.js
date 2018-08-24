@@ -125,8 +125,9 @@ module.exports = class extends think.Model {
   async nowclock(openid) {
     const users = this.model('users');
     const user = await users.where({openid: openid}).find();
-    const userday = new Date(user.status);
-    const nowday = Date.parse(new Date());
+    const moneyTemp = user.nowmoney;
+    const userday = new Date(parseInt(user.status));
+    const nowday = new Date();
     if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() == nowday.getDate() + 1) {
       const daylist = this.model('data');
       await daylist.add({
@@ -136,7 +137,15 @@ module.exports = class extends think.Model {
         name: user.name,
         img: user.img
       });
+      await users.where({openid: openid}).update({
+        status: '',
+        nowmoney: ''
+      });
+      await user.where({openid: openid}).increment('day', 1);
+      await user.where({openid: openid}).increment('money', moneyTemp);
       return 1;
+    } else if (userday.getDate() == nowday.getDate()) {
+      return 2;
     } else {
       return 0;
     }

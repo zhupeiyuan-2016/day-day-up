@@ -88,6 +88,9 @@ Page({
       [str]: !this.data.popup.flag
     })
   },
+  wx.onCompassChange(function (res) {
+    console.log(res.direction)
+  }),
   onLoad: function() {
   let _this = this
     wx.login({
