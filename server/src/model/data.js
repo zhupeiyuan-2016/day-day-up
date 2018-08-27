@@ -128,7 +128,16 @@ module.exports = class extends think.Model {
     const moneyTemp = user.nowmoney;
     const userday = new Date(parseInt(user.status));
     const nowday = new Date();
-    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() == nowday.getDate() + 1) {
+    // console.log(userday.getFullYear());
+    // console.log('---------------------');
+    // console.log(nowday.getFullYear());
+    // console.log(userday.getMonth());
+    // console.log('---------------------');
+    // console.log(nowday.getMonth());
+    // console.log(userday.getDate());
+    // console.log('---------------------');
+    // console.log(nowday.getDate());
+    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() + 1 == nowday.getDate()) {
       const daylist = this.model('data');
       await daylist.add({
         openid: openid,
@@ -141,12 +150,16 @@ module.exports = class extends think.Model {
         status: '',
         nowmoney: ''
       });
-      await user.where({openid: openid}).increment('day', 1);
-      await user.where({openid: openid}).increment('money', moneyTemp);
+      await users.where({openid: openid}).increment('day', 1);
+      await users.where({openid: openid}).increment('money', moneyTemp);
       return 1;
     } else if (userday.getDate() == nowday.getDate()) {
       return 2;
     } else {
+      await users.where({openid: openid}).update({
+        status: '',
+        nowmoney: ''
+      });
       return 0;
     }
   }
