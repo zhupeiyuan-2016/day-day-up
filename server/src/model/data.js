@@ -5,12 +5,15 @@ module.exports = class extends think.Model {
   */
   async daylist(count) {
     const model = this.model('data');
-    const date = new Date().getFullYear() + `-` + new Date().getMonth() + `-` + new Date().getDay();
+    const date = new Date();
     const box = await model.limit(count).select();
+    console.log('------------');
     console.log(box);
+    console.log(new Date(parseInt(box[0].date)).getDate());
     const data = [];
     for (let i = 0; i < box.length; i++) {
-      if (box[i].date == date) {
+      if (new Date(parseInt(box[i].date)).getDate() + 1 == date.getDate()) {
+        box[i].date = new Date(parseInt(box[i].date)).getHours() + `时` + new Date(parseInt(box[i].date)).getMinutes();
         data.push(box[i]);
       }
     }
@@ -137,7 +140,8 @@ module.exports = class extends think.Model {
     // console.log(userday.getDate());
     // console.log('---------------------');
     // console.log(nowday.getDate());
-    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() + 1 == nowday.getDate()) {
+    // console.log(nowday.getHours());
+    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() + 1 == nowday.getDate() && nowday.getHours() >= 6 && nowday.getHours() < 7) {
       const daylist = this.model('data');
       await daylist.add({
         openid: openid,
