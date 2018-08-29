@@ -113,13 +113,17 @@ module.exports = class extends think.Model {
     const users = this.model('users');
     const user = await users.where({openid: openid}).find();
     if (think.isEmpty(user.status)) {
-      await users.where({openid: openid}).update({
-        nowmoney: money,
-        status: date
-      });
+      return 1;
     } else {
       return 0;
     }
+  }
+  async clockPay(openid, money, date) {
+    const users = this.model('users');
+    await users.where({openid: openid}).update({
+      nowmoney: money,
+      status: date
+    });
   }
   /*
    打卡验证
@@ -141,7 +145,7 @@ module.exports = class extends think.Model {
     // console.log('---------------------');
     // console.log(nowday.getDate());
     // console.log(nowday.getHours());
-    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() + 1 == nowday.getDate() && nowday.getHours() >= 6 && nowday.getHours() < 7) {
+    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() + 1 == nowday.getDate() && nowday.getHours() >= 7 && nowday.getHours() < 8) {
       const daylist = this.model('data');
       await daylist.add({
         openid: openid,

@@ -1,6 +1,7 @@
 const path = require('path');
 const isDev = think.env === 'development';
 const cors = require('@koa/cors');
+// const xmlParser = require('koa-xml-body');
 module.exports = [
   {
     handle: 'meta',
