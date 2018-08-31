@@ -5,14 +5,13 @@ module.exports = class extends think.Model {
   */
   async daylist(count) {
     const model = this.model('data');
+    // const date = new Date(parseInt('1534636223000'));
     const date = new Date();
     const box = await model.limit(count).select();
-    console.log('------------');
-    console.log(box);
-    console.log(new Date(parseInt(box[0].date)).getDate());
     const data = [];
     for (let i = 0; i < box.length; i++) {
-      if (new Date(parseInt(box[i].date)).getDate() + 1 == date.getDate()) {
+      // Math.floor((date.getTime() - new Date(parseInt(box[i].date)).getTime()) / 86400000) == 0
+      if (Math.floor((date.getTime() - new Date(parseInt(box[i].date)).getTime()) / 86400000) == 1) {
         box[i].date = new Date(parseInt(box[i].date)).getHours() + `时` + new Date(parseInt(box[i].date)).getMinutes();
         data.push(box[i]);
       }
@@ -25,8 +24,6 @@ module.exports = class extends think.Model {
   */
   async userimg(name) {
     const model = this.model('users');
-    console.log('name-------------------');
-    console.log(name);
     const user = await model.where({name: name}).find();
     return user.img;
   }
@@ -135,17 +132,16 @@ module.exports = class extends think.Model {
     const moneyTemp = user.nowmoney;
     const userday = new Date(parseInt(user.status));
     const nowday = new Date();
-    // console.log(userday.getFullYear());
-    // console.log('---------------------');
-    // console.log(nowday.getFullYear());
-    // console.log(userday.getMonth());
-    // console.log('---------------------');
-    // console.log(nowday.getMonth());
-    // console.log(userday.getDate());
-    // console.log('---------------------');
-    // console.log(nowday.getDate());
-    // console.log(nowday.getHours());
-    if (userday.getFullYear() == nowday.getFullYear() && userday.getMonth() == nowday.getMonth() && userday.getDate() + 1 == nowday.getDate() && nowday.getHours() >= 7 && nowday.getHours() < 8) {
+    // const nowday = new Date(parseInt('1535842832000'));
+    console.log('相差');
+    console.log(Math.floor((nowday.getTime() - userday.getTime()) / 86400000));
+    console.log(userday);
+    console.log(nowday);
+    console.log(userday.getDate());
+    console.log('----------');
+    console.log(nowday.getDate());
+    console.log(Math.floor((nowday.getTime() - userday.getTime()) / 86400000));
+    if (Math.floor((nowday.getTime() - userday.getTime()) / 86400000) == 1 && ((nowday.getHours == 6 && nowday.getMinutes >= 30) || (nowday.getHours == 7 && nowday.getMinutes <= 30))) {
       const daylist = this.model('data');
       await daylist.add({
         openid: openid,
@@ -154,19 +150,43 @@ module.exports = class extends think.Model {
         name: user.name,
         img: user.img
       });
+      if (think.isEmpty(user.tempstatus)) {
+        users.where({openid: openid}).update({
+          tempstatus: user.status
+        });
+      } else {
+        const tempStatus = new Date(parseInt(user.tempstatus));
+        if (Math.floor((nowday.getTime() - tempStatus.getTime()) / 86400000) == 1) {
+          console.log('连续加成');
+          await users.where({openid: openid}).increment('addday', 1);
+          users.where({openid: openid}).update({
+            tempstatus: user.status
+          });
+        } else {
+          const tempDate = new Date();
+          console.log('连续失败');
+          users.where({openid: openid}).update({
+            tempstatus: Date.parse(new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 7, 0, 0)),
+            addday: '0'
+          });
+        }
+      }
       await users.where({openid: openid}).update({
+        // tempstatus: user.status,
         status: '',
         nowmoney: ''
       });
       await users.where({openid: openid}).increment('day', 1);
       await users.where({openid: openid}).increment('money', moneyTemp);
       return 1;
-    } else if (userday.getDate() == nowday.getDate()) {
+    } else if (Math.floor((nowday.getTime() - userday.getTime()) / 86400000) == 0) {
       return 2;
     } else {
       await users.where({openid: openid}).update({
         status: '',
-        nowmoney: ''
+        nowmoney: '',
+        tempstatus: '',
+        addday: ''
       });
       return 0;
     }

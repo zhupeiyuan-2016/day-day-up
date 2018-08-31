@@ -5,14 +5,19 @@ module.exports = class extends Base {
   async indexAction() {
     const postdata = this.ctx.post('');
     const model = this.model('data');
-    const date = Date.parse(new Date());
+    const tempDate = new Date();
+    const date = Date.parse(new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 6, 29, 0));
     const msg = await model.clock(postdata.openid, postdata.money, date);
     if (msg == 0) {
       return this.success({
         'data': '已经打卡过'
       });
     } else {
-      await this.pay(postdata.openid, postdata.money);
+      await model.clockPay(postdata.openid, postdata.money, date);
+      return this.success({
+        'data': '打卡成功'
+      });
+      // await this.pay(postdata.openid, postdata.money);
     }
   };
   async payAction() {
@@ -42,9 +47,9 @@ module.exports = class extends Base {
     const postdata = this.ctx.post('');
     const model = this.model('users');
     const users = await model.where({openid: postdata.openid}).find();
-    const status = users.status;
     return this.success({
-      'status': status
+      'status': users.status,
+      'addday': users.addday
     });
   };
   async pay(openid, money) {
@@ -90,14 +95,6 @@ module.exports = class extends Base {
       if (errors !== null) {
         return this.fail(1, '支付错误');
       }
-      // total_fee;
-      //       <appid><![CDATA[wx052e3a40ef81e8cc]]></appid>
-      // <mch_id><![CDATA[1432616402]]></mch_id>
-      // <nonce_str><![CDATA[hLQ0RSrR8pwNjTrB]]></nonce_str>
-      // <sign><![CDATA[DE31EED55B3CAC47563927AC2D3DE25F]]></sign>
-      // <result_code><![CDATA[SUCCESS]]></result_code>
-      // <prepay_id><![CDATA[wx29193928175684eb9571acd42073580120]]></prepay_id>
-      // <trade_type><![CDATA[JSAPI]]></trade_type>
       const payData = {
         appId: postData.appid,
         nonceStr: response.xml.nonce_str.text(),
