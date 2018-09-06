@@ -5,13 +5,15 @@ module.exports = class extends think.Model {
   */
   async daylist(count) {
     const model = this.model('data');
-    // const date = new Date(parseInt('1534636223000'));
+    // const date = new Date(parseInt('1536362700000'));
     const date = new Date();
     const box = await model.limit(count).select();
     const data = [];
     for (let i = 0; i < box.length; i++) {
-      // Math.floor((date.getTime() - new Date(parseInt(box[i].date)).getTime()) / 86400000) == 0
-      if (Math.floor((date.getTime() - new Date(parseInt(box[i].date)).getTime()) / 86400000) == 1) {
+      console.log(box[i]);
+      console.log(box[i].date);
+      const day = await this.daysBetween(Date.parse(date), box[i].date);
+      if (day == 0) {
         box[i].date = new Date(parseInt(box[i].date)).getHours() + `时` + new Date(parseInt(box[i].date)).getMinutes();
         data.push(box[i]);
       }
@@ -116,9 +118,9 @@ module.exports = class extends think.Model {
     }
   }
   async clockPay(openid, money, date) {
-    const users = this.model('users');
-    await users.where({openid: openid}).update({
-      nowmoney: money,
+    const users = this.model('users'); ;
+    users.where({openid: openid}).update({
+      nowmoney: '',
       status: date
     });
   }
@@ -126,46 +128,50 @@ module.exports = class extends think.Model {
    打卡验证
   @openid(char)用户唯一id
   */
+  async daysBetween(day1, day2) {
+    const temp1 = new Date(parseInt(day1));
+    const temp2 = new Date(parseInt(day2));
+    const time1 = new Date(temp1.getFullYear() + '-' + temp1.getMonth() + '-' + temp1.getDate());
+    const time2 = new Date(temp2.getFullYear() + '-' + temp2.getMonth() + '-' + temp2.getDate());
+    const result = Math.abs(parseInt((time1 - time2) / 1000 / 3600 / 24));
+    return result;
+  };
   async nowclock(openid) {
     const users = this.model('users');
     const user = await users.where({openid: openid}).find();
     const moneyTemp = user.nowmoney;
-    const userday = new Date(parseInt(user.status));
+    // const userday = new Date(parseInt(user.status));
     const nowday = new Date();
-    // const nowday = new Date(parseInt('1535842832000'));
+    // const nowday = new Date(parseInt('1536362700000'));
     console.log('相差');
-    console.log(Math.floor((nowday.getTime() - userday.getTime()) / 86400000));
-    console.log(userday);
-    console.log(nowday);
-    console.log(userday.getDate());
-    console.log('----------');
-    console.log(nowday.getDate());
-    console.log(Math.floor((nowday.getTime() - userday.getTime()) / 86400000));
-    if (Math.floor((nowday.getTime() - userday.getTime()) / 86400000) == 1 && ((nowday.getHours == 6 && nowday.getMinutes >= 30) || (nowday.getHours == 7 && nowday.getMinutes <= 30))) {
+    console.log(await this.daysBetween(Date.parse(nowday), user.status));
+    const daysBetween = await this.daysBetween(Date.parse(nowday), user.status);
+    console.log(nowday.getHours());
+    console.log(nowday.getMinutes());
+    if ((daysBetween == 1) && ((nowday.getHours() == 6 && nowday.getMinutes() >= 30) || (nowday.getHours() == 7 && nowday.getMinutes() <= 30))) {
       const daylist = this.model('data');
       await daylist.add({
         openid: openid,
-        date: user.status,
+        date: Date.parse(nowday),
         money: user.nowmoney,
         name: user.name,
         img: user.img
       });
       if (think.isEmpty(user.tempstatus)) {
-        users.where({openid: openid}).update({
+        await users.where({openid: openid}).update({
           tempstatus: user.status
         });
       } else {
         const tempStatus = new Date(parseInt(user.tempstatus));
-        if (Math.floor((nowday.getTime() - tempStatus.getTime()) / 86400000) == 1) {
+        if (daysBetween) {
           console.log('连续加成');
           await users.where({openid: openid}).increment('addday', 1);
-          users.where({openid: openid}).update({
+          await users.where({openid: openid}).update({
             tempstatus: user.status
           });
         } else {
           const tempDate = new Date();
-          console.log('连续失败');
-          users.where({openid: openid}).update({
+          await users.where({openid: openid}).update({
             tempstatus: Date.parse(new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 7, 0, 0)),
             addday: '0'
           });
@@ -179,7 +185,9 @@ module.exports = class extends think.Model {
       await users.where({openid: openid}).increment('day', 1);
       await users.where({openid: openid}).increment('money', moneyTemp);
       return 1;
-    } else if (Math.floor((nowday.getTime() - userday.getTime()) / 86400000) == 0) {
+    } else if (((daysBetween == 1) && (nowday.getHours() == 6 && nowday.getMinutes() < 30)) || ((daysBetween == 1) && nowday.getHours() < 6)) {
+      return 2;
+    } else if (daysBetween == 0) {
       return 2;
     } else {
       await users.where({openid: openid}).update({

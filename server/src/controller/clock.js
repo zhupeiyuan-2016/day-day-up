@@ -6,16 +6,23 @@ module.exports = class extends Base {
     const postdata = this.ctx.post('');
     const model = this.model('data');
     const tempDate = new Date();
-    const date = Date.parse(new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 6, 29, 0));
-    const msg = await model.clock(postdata.openid, postdata.money, date);
+    // const date = Date.parse(new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 6, 29, 0));
+    // const tempDate = new Date(parseInt('1536330300000'));
+    console.log(tempDate.getHours());
+    console.log(tempDate.getMinutes());
+    const msg = await model.clock(postdata.openid, postdata.money, tempDate);
     if (msg == 0) {
       return this.success({
         'data': '已经打卡过'
       });
-    } else {
-      await model.clockPay(postdata.openid, postdata.money, date);
+    } else if ((tempDate.getHours() == 9 && tempDate.getMinutes() >= 30) || (tempDate.getHours() == 22 && tempDate.getMinutes() <= 30)) {
+      await model.clockPay(postdata.openid, postdata.money, Date.parse(tempDate));
       return this.success({
         'data': '打卡成功'
+      });
+    } else {
+      return this.success({
+        'data': '打卡未到约定时间'
       });
       // await this.pay(postdata.openid, postdata.money);
     }
@@ -90,7 +97,6 @@ module.exports = class extends Base {
       body: formData
     }
     ).then(res => res.text());
-    console.log(data);
     await xmlreader.read(data, function(errors, response) {
       if (errors !== null) {
         return this.fail(1, '支付错误');
@@ -101,11 +107,8 @@ module.exports = class extends Base {
         package: `prepay_id=` + response.xml.prepay_id.text(),
         signType: 'MD5',
         timeStamp: postData.out_trade_no
-        // paySign: response.xml.sign.text()
       };
       payData.paySign = _this.createSign(payData);
-      // console.log(payData);
-      // _this.createSign(payData);
       return _this.success({
         'data': payData
       });
@@ -123,10 +126,7 @@ module.exports = class extends Base {
       strA += index + `=` + data[index] + `&`;
     }
     strA += `key=` + key;
-    console.log('------------------sign');
-    console.log(strA);
     const strB = think.md5(strA).toUpperCase();
-    console.log(strB);
     return strB;
   }
 };
