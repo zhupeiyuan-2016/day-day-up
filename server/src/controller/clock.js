@@ -5,27 +5,43 @@ module.exports = class extends Base {
   async indexAction() {
     const postdata = this.ctx.post('');
     const model = this.model('data');
+    // const tempDate = new Date(parseInt('1540676400000'));
     const tempDate = new Date();
-    // const date = Date.parse(new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 6, 29, 0));
-    // const tempDate = new Date(parseInt('1536330300000'));
     console.log(tempDate.getHours());
-    console.log(tempDate.getMinutes());
-    const msg = await model.clock(postdata.openid, postdata.money, tempDate);
-    if (msg == 0) {
-      return this.success({
-        'data': '已经打卡过'
-      });
-    } else if ((tempDate.getHours() == 9 && tempDate.getMinutes() >= 30) || (tempDate.getHours() == 22 && tempDate.getMinutes() <= 30)) {
-      await model.clockPay(postdata.openid, postdata.money, Date.parse(tempDate));
-      return this.success({
-        'data': '打卡成功'
-      });
+    console.log('------------');
+    if ((tempDate.getHours() == 5 && tempDate.getMinutes() >= 30) || (tempDate.getHours() == 6) || (tempDate.getHours() == 7 && tempDate.getMinutes() <= 30)) {
+      const msg = await model.clock(postdata.openid, postdata.money, tempDate);
+      if (msg == 0) {
+        return this.success({
+          'data': '今日已经打卡过了'
+        });
+      } else {
+        await model.clockPay(postdata.openid, postdata.money, tempDate);
+        return this.success({
+          'data': '打卡成功'
+        });
+      }
     } else {
       return this.success({
         'data': '打卡未到约定时间'
       });
-      // await this.pay(postdata.openid, postdata.money);
     }
+
+    // if (msg == 0) {
+    //   return this.success({
+    //     'data': '已经打卡过'
+    //   });
+    // } else if ((tempDate.getHours() == 21 && tempDate.getMinutes() >= 30) || (tempDate.getHours() == 22 && tempDate.getMinutes() <= 30)) {
+    //   await model.clockPay(postdata.openid, postdata.money, Date.parse(tempDate));
+    //   return this.success({
+    //     'data': '打卡成功'
+    //   });
+    // } else {
+    //   return this.success({
+    //     'data': '打卡未到约定时间'
+    //   });
+    // await this.pay(postdata.openid, postdata.money);
+    // }
   };
   async payAction() {
     const postdata = this.ctx.post('');
@@ -54,10 +70,20 @@ module.exports = class extends Base {
     const postdata = this.ctx.post('');
     const model = this.model('users');
     const users = await model.where({openid: postdata.openid}).find();
-    return this.success({
-      'status': users.status,
-      'addday': users.addday
-    });
+    const newDate = new Date();
+    // const newDate = new Date(parseInt('1537394400000'));
+    const userDate = new Date(parseInt(users.status));
+    if ((newDate.getMonth() == userDate.getMonth()) && (newDate.getDate() == userDate.getDate())) {
+      return this.success({
+        'status': 1,
+        'addday': users.addday
+      });
+    } else {
+      return this.success({
+        'status': users.status,
+        'addday': users.addday
+      });
+    }
   };
   async pay(openid, money) {
     const _this = this;

@@ -9,7 +9,7 @@ module.exports = class extends Base {
     for (let i = 0; i < data.length; i++) {
       prizenumber += data[i].money;
     }
-    const first = data[data.length - 1];
+    const first = data[0];
     if (think.isEmpty(first)) {
       return this.fail(1, '今天还没有打卡');
     }

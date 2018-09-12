@@ -10,8 +10,6 @@ module.exports = class extends think.Model {
     const box = await model.limit(count).select();
     const data = [];
     for (let i = 0; i < box.length; i++) {
-      console.log(box[i]);
-      console.log(box[i].date);
       const day = await this.daysBetween(Date.parse(date), box[i].date);
       if (day == 0) {
         box[i].date = new Date(parseInt(box[i].date)).getHours() + `时` + new Date(parseInt(box[i].date)).getMinutes();
@@ -111,18 +109,51 @@ module.exports = class extends think.Model {
   async clock(openid, money, date) {
     const users = this.model('users');
     const user = await users.where({openid: openid}).find();
-    if (think.isEmpty(user.status)) {
+    const data = new Date();
+    const userData = new Date(user.status);
+    if ((think.isEmpty(user.status)) || ((data.getMonth() != userData.getMonth()) && (data.getDate() != userData.getDate()))) {
       return 1;
     } else {
       return 0;
     }
   }
   async clockPay(openid, money, date) {
-    const users = this.model('users'); ;
-    users.where({openid: openid}).update({
-      nowmoney: '',
-      status: date
+    const users = this.model('users');
+    const datalist = this.model('data');
+    await users.where({openid: openid}).update({
+      nowmoney: money,
+      status: Date.parse(date)
     });
+    const user = await users.where({openid: openid}).find();
+    await users.where({openid: openid}).increment('day', 1);
+    await datalist.add({
+      openid: openid,
+      date: Date.parse(date),
+      money: money,
+      name: user.name,
+      img: user.img
+    });
+    if (think.isEmpty(user.tempstatus)) {
+      await users.where({openid: openid}).update({
+        tempstatus: Date.parse(date)
+      });
+    } else {
+      const daysBetween = await this.daysBetween(Date.parse(date), user.tempstatus);
+      console.log('相差');
+      console.log(daysBetween);
+      if (daysBetween == 1) {
+        await users.where({openid: openid}).increment('addday', 1);
+        await users.where({openid: openid}).update({
+          tempstatus: user.status
+        });
+      } else {
+        const tempDate = new Date();
+        await users.where({openid: openid}).update({
+          tempstatus: Date.parse(date),
+          addday: '0'
+        });
+      }
+    }
   }
   /*
    打卡验证
